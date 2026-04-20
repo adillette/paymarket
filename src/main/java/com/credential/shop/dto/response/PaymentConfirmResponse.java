@@ -6,6 +6,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PaymentConfirmResponse {
+  private int result;
+  private String message;
+  
   private String paymentKey;
   private String orderId;
   private String status;

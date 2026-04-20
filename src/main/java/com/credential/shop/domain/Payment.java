@@ -27,6 +27,11 @@ public class Payment {
     this.paymentKey = paymentKey;
     this.orderId = orderId;
     this.amount = amount;
-    this.status = PaymentStatus.PAID;
+   this.status = PaymentStatus.READY;
   }
+
+  public void approve() {
+    this.status = PaymentStatus.PAID;
+    this.approvedAt = LocalDateTime.now();
+}
 }
