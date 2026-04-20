@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-  private OrderRepository orderRepository;
+
+  private final OrderRepository orderRepository;
 
   public OrderCreateResponse createOrder(OrderCreateRequest request){
     Order order = new Order(
@@ -22,6 +23,10 @@ public class OrderService {
 
     orderRepository.save(order);
 
-    return new OrderCreateResponse(order.getOrderId(), order.getTotalAmount(),order.getStatus().name());
+    return new OrderCreateResponse(
+      order.getOrderId(), 
+      order.getTotalAmount(),
+      order.getQuantity(),
+      order.getStatus().name());
   }
 }

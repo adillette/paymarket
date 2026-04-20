@@ -3,6 +3,9 @@ package com.credential.shop.domain;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,6 +28,7 @@ public class Order {
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
+ 
   private LocalDateTime createdAt;
 
   public Order(Long productId,int quantity,int totalAmount) {
@@ -32,6 +36,8 @@ public class Order {
     this.productId = productId; // 외부에서 받은 값 저장
     this.quantity=quantity;
     this.totalAmount = totalAmount; // 외부에서 받은 값 저장
+    this.status = OrderStatus.PENDING;
+    this.createdAt = LocalDateTime.now();
   }
 
   public void markAsPaid(){
