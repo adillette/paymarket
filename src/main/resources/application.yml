@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: shoppay
+  datasource:
+    url: jdbc:mysql://localhost:3306/shoppay
+    username: shoppay
+    password: shop1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+toss:
+  payments:
+    secret-key: ${toss.payments.secret-key}
