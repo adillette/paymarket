@@ -11,6 +11,6 @@ spring:
       ddl-auto: none
     show-sql: true
 
-toss:
-  payments:
-    secret-key: ${toss.payments.secret-key}
+
+  config:
+    import: application-secret.yml 
