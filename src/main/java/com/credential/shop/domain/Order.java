@@ -19,17 +19,19 @@ public class Order {
   @Id
   private String orderId;
   private Long productId;
-  private int amount;
-
+  private int quantity;
+  private int totalAmount;
+  
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
   private LocalDateTime createdAt;
 
-  public Order(Long productId, int amount) {
+  public Order(Long productId,int quantity,int totalAmount) {
     this.orderId = UUID.randomUUID().toString(); // 랜덤 고유 ID 자동 생성
     this.productId = productId; // 외부에서 받은 값 저장
-    this.amount = amount; // 외부에서 받은 값 저장
+    this.quantity=quantity;
+    this.totalAmount = totalAmount; // 외부에서 받은 값 저장
   }
 
   public void markAsPaid(){
