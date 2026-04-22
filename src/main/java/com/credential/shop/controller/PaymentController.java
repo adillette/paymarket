@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -23,19 +26,20 @@ public class PaymentController {
   @PostMapping("/confirm")
   public ResponseEntity<PaymentConfirmResponse> confirmPayment(@RequestBody PaymentConfirmRequest request) {
 
-    int result = paymentService.confirm(request);
-    if (result == 1) {
-      return ResponseEntity.ok(PaymentConfirmResponse.builder()
-          .result(1)
-          .message("결제성공")
-          .build());
-
-    } else {
-      return ResponseEntity.status(400).body(PaymentConfirmResponse.builder()
-          .result(0)
-          .message("결제 실패")
-          .build());
-    }
+   PaymentConfirmResponse response= paymentService.confirm(request);
+   return ResponseEntity.ok(response);
   }
+
+  @GetMapping("/toss-success")
+  public ResponseEntity<String> tossSuccess(
+        @RequestParam String paymentKey,
+        @RequestParam String orderId,
+        @RequestParam int amount) {
+      
+        PaymentConfirmRequest request = new PaymentConfirmRequest(paymentKey,orderId,amount);
+         PaymentConfirmResponse response = paymentService.confirm(request);
+       return ResponseEntity.ok("결제 완료: " + response.toString());
+  }
+  
 
 }
