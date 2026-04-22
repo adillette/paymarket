@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toss 결제 테스트</title>
+  <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+<body>
+
+  <h2>주문 생성 테스트</h2>
+  <label>상품 ID: <input type="number" id="productId" value="1"></label><br>
+  <label>수량: <input type="number" id="quantity" value="1"></label><br>
+  <label>금액: <input type="number" id="totalAmount" value="10000"></label><br>
+  <button onclick="createOrder()">주문 생성 + 결제 요청</button>
+
+  <hr>
+  <pre id="log" style="background:#f4f4f4; padding:12px;"></pre>
+
+  <script>
+    const tossPayments = TossPayments('test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm');
+
+    function log(msg) {
+      document.getElementById('log').textContent += msg + '\n';
+    }
+
+    async function createOrder() {
+      const productId   = Number(document.getElementById('productId').value);
+      const quantity    = Number(document.getElementById('quantity').value);
+      const totalAmount = Number(document.getElementById('totalAmount').value);
+
+      log('▶ POST /orders/create 요청 중...');
+
+      const res = await fetch('http://localhost:8080/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, quantity, totalAmount })
+      });
+
+      if (!res.ok) {
+        log('✗ 주문 생성 실패: ' + res.status);
+        return;
+      }
+
+      const order = await res.json();
+      log('✓ 주문 생성 성공: ' + JSON.stringify(order));
+
+      // 주문 생성 후 Toss 결제창 호출
+      tossPayments.requestPayment('카드', {
+        amount: totalAmount,
+        orderId: order.orderId,   // OrderCreateResponse에 orderId 필드 있어야 함
+        orderName: '테스트상품',
+        successUrl: 'http://localhost:8080/payments/toss-success', // GET 전용 엔드포인트 필요
+        failUrl:    'http://localhost:8080/payments/toss-fail'
+      });
+    }
+  </script>
+
+</body>
+</html>
