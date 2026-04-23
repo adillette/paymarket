@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.credential.shop.client.TossPaymentClient;
 import com.credential.shop.domain.Order;
 import com.credential.shop.dto.request.PaymentConfirmRequest;
 import com.credential.shop.dto.response.PaymentConfirmResponse;
@@ -13,7 +12,6 @@ import com.credential.shop.global.AmountMismatchException;
 import com.credential.shop.global.DuplicatePaymentException;
 import com.credential.shop.global.OrderNotFoundException;
 import com.credential.shop.repository.OrderRepository;
-import com.credential.shop.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +85,7 @@ public class PaymentService {
         throw new AmountMismatchException();
       }
     //도입했고 실제 로직 payment Processor 로 이동 ㄱㄱ
-   paymentProcessor.process(request.getOrderId(),request);
+  
   
    PaymentConfirmResponse response= paymentProcessor.process(request.getOrderId(), request);
       try {
