@@ -10,11 +10,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.credential.shop.dto.response.PaymentConfirmResponse;
 import com.credential.shop.global.TossPaymentException;
+import com.credential.shop.global.TossPaymentUnknownException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class TossPaymentClient {
 
@@ -54,15 +60,22 @@ public class TossPaymentClient {
     HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
     // 헤더 + 바디를 하나로 묶은 HTTP 요청 객체
 
-    ResponseEntity<PaymentConfirmResponse> response = restTemplate.postForEntity(
-        TOSS_CONFIRM_URL, request, PaymentConfirmResponse.class);
-
-    // POST 요청 실행
-
-    if (!response.getStatusCode().is2xxSuccessful()) {
+    try {
+      ResponseEntity<PaymentConfirmResponse> response = restTemplate.postForEntity(
+          TOSS_CONFIRM_URL, request, PaymentConfirmResponse.class);
+      if (!response.getStatusCode().is2xxSuccessful()) {
+        throw new TossPaymentException();
+      }
+      return response.getBody();
+    } catch (HttpClientErrorException e) {
+      log.error("[Toss] 실패 응답 status={}, body={}",
+          e.getStatusCode(), e.getResponseBodyAsString());
       throw new TossPaymentException();
+
+    } catch (ResourceAccessException e) {
+      log.error("[Toss] 타임아웃/네트워크 오류", e);
+      throw new TossPaymentUnknownException();
     }
-    return response.getBody();
 
   }
 
