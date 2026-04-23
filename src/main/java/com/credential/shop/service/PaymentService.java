@@ -12,6 +12,7 @@ import com.credential.shop.global.AmountMismatchException;
 import com.credential.shop.global.DuplicatePaymentException;
 import com.credential.shop.global.OrderNotFoundException;
 import com.credential.shop.repository.OrderRepository;
+import com.credential.shop.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class PaymentService {
    
   private final RedisTemplate<String, String> redisTemplate;
   private final ObjectMapper objectMapper;
-  
+  private final PaymentRepository paymentRepository;
   private final OrderRepository orderRepository;
   
   private final PaymentProcessor paymentProcessor;
@@ -49,6 +50,10 @@ public class PaymentService {
   public PaymentConfirmResponse confirm(PaymentConfirmRequest request) {
     String key = PREFIX + request.getPaymentKey();
 
+    //TTL 무관한 db 조회
+    if(paymentRepository.existsByPaymentKey(request.getPaymentKey())){
+      throw new DuplicatePaymentException();
+    }
     // redis 상태 확인
     String status = redisTemplate.opsForValue().get(key);
 
