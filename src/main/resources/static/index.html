@@ -11,14 +11,14 @@
   <h2>주문 생성 테스트</h2>
   <label>상품 ID: <input type="number" id="productId" value="1"></label><br>
   <label>수량: <input type="number" id="quantity" value="1"></label><br>
-  <label>금액: <input type="number" id="totalAmount" value="10000"></label><br>
+  <label>금액: <input type="number" id="totalAmount" value="1000"></label><br>
   <button onclick="createOrder()">주문 생성 + 결제 요청</button>
 
   <hr>
   <pre id="log" style="background:#f4f4f4; padding:12px;"></pre>
 
   <script>
-    const tossPayments = TossPayments('test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm');
+    const tossPayments = TossPayments('test_ck_Poxy1XQL8R1wDbabx5PZr7nO5Wml');
 
     function log(msg) {
       document.getElementById('log').textContent += msg + '\n';
