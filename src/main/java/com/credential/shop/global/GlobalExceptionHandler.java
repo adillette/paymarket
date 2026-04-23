@@ -25,4 +25,9 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handleTossPayment() {
     return ResponseEntity.status(500).body("결제 처리 중 오류가 발생했습니다.");
   }
+
+  @ExceptionHandler(TossPaymentUnknownException.class)
+  public ResponseEntity<String> handleTossUnknown() {
+      return ResponseEntity.status(202).body("결제 처리 중입니다. 잠시 후 확인해주세요.");
+  }
 }
