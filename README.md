@@ -15,13 +15,18 @@ Spring Boot, Java , MySQL, Redis, Docker
 ![위변조차단](./docs/금액위변조.png)
 
 ### 3. 멱등성 처리(중복 결제 차단)
+
 **2단계 방어 구조:**
+
 #### Redis 선점 (TTL 내 실시간 차단)
+
 > 동일한 paymentKey로 재요청 시 TTL 내에는 Redis DONE 상태로 즉시 차단하고 TTL 만료 후에는 DB payment_key 중복 체크로 영구 차단해 이중 결제를 방지합니다.
--TTL: 3분(Toss API 통상 응답시간 30~60초 기준 여유분 적용)
+
+- TTL: 3분(Toss API 통상 응답시간 30~60초 기준 여유분 적용)
 
 #### DB UNIQUE 제약 (TTL 만료 후 영구 차단)
 >TTL 만료 후 동일 `payment_key` 재요청 시 DB `existsByPaymentKey` 체크로 최종 방어
+
 ![중복차단](./docs/중복결제차단.png)
 
 ---
@@ -56,10 +61,12 @@ Spring Boot, Java , MySQL, Redis, Docker
  
 **문제:**
 개발 중 네트워크 단절 상황에서 Toss API 호출 후 응답을 받지 못한 채 연결이 끊어짐
+
 결제가 실제로 승인됐는지 알 수 없는 상태에서 DB에 아무것도 남지 않아 해당 결제 건 추적 불가
  
 **원인:**
 Toss API 호출 실패를 단순 예외로 처리해 FAILED로 전환하고 종료
+
 타임아웃/네트워크 단절(성공 여부 불명확)과 명확한 실패 응답을 동일하게 처리한 구조
  
 **해결:**
