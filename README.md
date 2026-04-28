@@ -75,7 +75,10 @@ Toss API 호출 실패를 단순 예외로 처리해 FAILED로 전환하고 종�
 - `ResourceAccessException` (타임아웃/네트워크 단절) → UNKNOWN 전환 후 스케줄러 재시도
 - `TossPaymentException` (Toss 명확한 실패 응답) → 즉시 FAILED 처리
 - UNKNOWN 상태는 스케줄러가 감지해 RetryService로 위임하고 TTL 3분 × 최대 3회 재시도 후 최종 FAILED 처리
+  
 **결과:**
+
 네트워크 단절로 인한 결제 유실 없이 재시도 가능한 구조 확보
+
 명확한 실패와 응답 유실을 분리해 불필요한 재시도 차단
 
