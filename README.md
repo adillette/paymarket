@@ -18,7 +18,7 @@ Spring Boot, Java , MySQL, Redis, Docker
 **2단계 방어 구조:**
 #### Redis 선점 (TTL 내 실시간 차단)
 > 동일한 paymentKey로 재요청 시 TTL 내에는 Redis DONE 상태로 즉시 차단하고 TTL 만료 후에는 DB payment_key 중복 체크로 영구 차단해 이중 결제를 방지합니다.
-> TTL: 3분(Toss API 통상 응답시간 30~60초 기준 여유분 적용)
+-TTL: 3분(Toss API 통상 응답시간 30~60초 기준 여유분 적용)
 
 #### DB UNIQUE 제약 (TTL 만료 후 영구 차단)
 >TTL 만료 후 동일 `payment_key` 재요청 시 DB `existsByPaymentKey` 체크로 최종 방어
