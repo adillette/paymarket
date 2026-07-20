@@ -43,20 +43,22 @@ public class PaymentService {
   
   private final PaymentProcessor paymentProcessor;
   private static final String PREFIX = "payment:idem:";
-  private static final long TTL = 3L;
+  private static final long TTL = 15L;
 
   
 
   public PaymentConfirmResponse confirm(PaymentConfirmRequest request) {
     String key = PREFIX + request.getPaymentKey();
 
+    
+    // redis 상태 확인
+    String status = redisTemplate.opsForValue().get(key);
+
     //TTL 무관한 db 조회
     if(paymentRepository.existsByPaymentKey(request.getPaymentKey())){
       throw new DuplicatePaymentException();
     }
-    // redis 상태 확인
-    String status = redisTemplate.opsForValue().get(key);
-
+    
     if (status != null && status.startsWith("DONE:")) {
       try {
         return objectMapper.readValue(status.substring(5), PaymentConfirmResponse.class);
@@ -100,6 +102,13 @@ public class PaymentService {
         log.error("DONE 캐싱 실패 key={}", key, e);
       }
       return response;
+
+
+
   }
+
+
+  //선점 해제
+  
 
 }

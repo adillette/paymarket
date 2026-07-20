@@ -70,7 +70,7 @@ public class TossPaymentClient {
     } catch (HttpClientErrorException e) {
       log.error("[Toss] 실패 응답 status={}, body={}",
           e.getStatusCode(), e.getResponseBodyAsString());
-      throw new TossPaymentException();
+      throw new TossPaymentException("Toss 실패 응답 status=\" + e.getStatusCode()");
 
     } catch (ResourceAccessException e) {
       log.error("[Toss] 타임아웃/네트워크 오류", e);
